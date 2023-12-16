@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Моя страница</title>
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static 'logForm.css' %}">
+</head>
+<body>
+  <div class="container">
+    <input type="checkbox" id="check">
+    <div class="login form">
+      <header>Вход</header>
+      <form method="post">
+          {% csrf_token %}
+          <input type="text" name="email" placeholder="Введите почту">
+            <input type="password" name="password" placeholder="Введите пароль">
+          <button style="margin-left: 80px; padding: 10px 70px;">Войти</button>
+      </form>
+      <div class="signup"><br>
+        <span class="signup">Нет аккаунта?
+         <label for="check">Регистрация</label>
+        </span>
+      </div>
+    </div>
+    <div class="registration form">
+      <header>Регистрация</header>
+      <form method="post">
+          {% csrf_token %}
+        <input type="email" name="create_email" placeholder="Введите почту">
+          <input type="text" name="create_user_name" placeholder="Придумайте имя">
+        <input type="password" name="create_password" placeholder="Придумайте пароль">
+        <button style="margin-left: 30px; padding: 10px 70px;">Зарегистрироваться</button>
+      </form>
+      <div class="signup">
+        <span class="signup">Уже есть аккаунт?
+         <label for="check">Вход</label>
+        </span>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

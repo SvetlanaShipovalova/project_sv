@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Информация о пользователе</title>
+    {% extends "base.html" %}
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'show_info.css' %}">
+</head>
+<body style="background-color: #009579;">
+{% block content %}
+<div class="container bootstrap snippets bootdey" style="margin-left: 300px;margin-top: 60px;">
+    <div class="col-md-8">
+        <div class="panel panel-white profile-widget panel-shadow">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="image-container bg2">
+                        <img src="https://www.gravatar.com/avatar/{{customer.id}}{{link_img}}?d=wavatar" class="avatar" alt="avatar">
+                    </div>
+                </div>
+                <div class="col-sm-12" >
+                    <div class="details" >
+                        <h3>Профиль пользователя: <i class="fa fa-sheild"></i></h3>
+                        <div>Заказчик: {{customer.first_name}} {{customer.last_name}}</div>
+                        <div>Адрес: {{customer.address}} </div>
+                        <div><br><h4>Недавние заказы: </h4></div>
+                        <div></div>
+                    </div>
+                {% if orders|length > 0 %}
+                    <table class="table table-success table-striped">
+                        <thead>
+                        <tr>
+                            <th scope="col">Номер заказа</th>
+                            <th scope="col">Имя монитора</th>
+                            <th scope="col">Количество</th>
+                            <th scope="col">Поставщик</th>
+                            <th scope="col">Дата заказа</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for order in orders %}
+                            {% if order.amount < 3 %}
+                            <tr class="table-danger">
+                            {% elif order.amount > 5%}
+                             <tr class="table-primary">
+                            {% else %}
+                        <tr>
+                        {% endif %}
+                            <th scope="row">{{order.number}}</th>
+                            <td>{{order.monitor}}</td>
+                            <td>{{order.amount}}</td>
+                            <td>{{order.provider}}</td>
+                            <td>{{order.order_date}}</td>
+                        </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+                <a href="{% url "create_order" customer.id %}" type="button" style="margin-left: 374px; margin-bottom: 20px" class="btn btn-primary">Новый заказ</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+{% endblock %}
+</html>

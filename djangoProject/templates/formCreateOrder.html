@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'formOrder.css' %}">
+    {% load crispy_forms_tags %}
+</head>
+
+<body style="background: #009579">
+<div id="registration-form">
+	<div class='fieldset'>
+    <legend>Оформление заказа:</legend>
+		<form action="#" method="post" data-validate="parsley">
+			<div class='row'>
+                {% block content %}
+                    <form method = "post">
+                        {% csrf_token %}
+                        <table>{{ form.as_table }}</table><br>
+                        <button type="submit" style=" background: rgb(64,199,129);
+  box-shadow: 0 -3px rgb(53,167,110) inset; padding: 2em 9.4em; font-size: 15px; font-weight: 700;" class="btn btn-default">Добавить</button>
+                    </form>
+                {% endblock %}
+			</div>
+		</form>
+	</div>
+</div>
+</body>
+</html>
