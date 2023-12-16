@@ -49,7 +49,7 @@ class Statistics(models. Model):
 
     def __str__(self):
         print(self.monitor.all())
-        return (self.region) +" Мониторы: " + (", ".join([element.model_name for element in self.monitor.all()]))
+        return " Мониторы: " + (", ".join([element.model_name for element in self.monitor.all()]))
 
 
 class Order(models.Model):
@@ -62,6 +62,7 @@ class Order(models.Model):
     order_date = models.DateField(verbose_name="Дата получения", null=False, blank=False)
 
     def __str__(self):
+
         return "Заказ: " + self.monitor.__str__() + " Количество: " + self.amount.__str__() + "шт. Дата заказа: " + self.order_date.__str__()
 
     class Meta:
