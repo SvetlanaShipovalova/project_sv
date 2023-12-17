@@ -1,15 +1,15 @@
 import hashlib
 import statistics
-
+from bootstrap_datepicker_plus.widgets import DateTimePickerInput
 from django.contrib.auth import login, logout
-
+from django.http import JsonResponse
+from django.views import generic
 from myProject.models import Order, Customer, Provider, Statistics, Region
 from myProject.forms import OrderForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate
-
 
 def logout_user(request):
     if request.user.is_authenticated:
@@ -112,14 +112,11 @@ def create_order(request, id_user):
         else:
             print("ups")
             return redirect("/")
-def delete_order(request, order_id):
-    try:
-        order = Order.objects.get(id=order_id)
-        order.delete()
-        return redirect(f"/showcustomer/{request.user.id}")
-    except Order.DoesNotExist:
-        print("Заказ не существует")
-        return redirect("/")
+def delete_order(request, id_user, order_id):
+    order = Order.objects.get(id=order_id)
+    order.delete()
+    return redirect(f"/providerView/{id_user}")
+
 def show_CustomerFromProvider(request, id_user):
     user = request.user
     provider = Provider.objects.get(id_user_id=request.user.id)
@@ -130,3 +127,28 @@ def show_CustomerFromProvider(request, id_user):
         'orders': orders
     }
     return render(request, 'providerViewOrder.html', response_data)
+
+def validate_username(request):
+    username = request.GET.get('create_user_name', None)
+    response = {
+        'taken': User.objects.filter(username__exact=username).exists()
+    }
+    return JsonResponse(response)
+
+def validate_email(request):
+    email = request.GET.get('create_email', None)
+    response = {
+        'taken': User.objects.filter(email__exact=email).exists()
+    }
+    return JsonResponse(response)
+
+def check_numberOrder(request, id_customer):
+    number = int(request.GET.get('number', None))
+    customer = Customer.objects.get(id_user_id=request.user.id)
+    if (number == ""):
+        number = 0
+    response = {
+        'exist': Order.objects.filter(number=number, customer = customer).exists()
+    }
+    return JsonResponse(response)
+

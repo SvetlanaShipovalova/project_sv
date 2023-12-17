@@ -32,10 +32,10 @@
       <header>Регистрация</header>
       <form method="post">
           {% csrf_token %}
-        <input type="email" name="create_email" placeholder="Введите почту">
-          <input type="text" name="create_user_name" placeholder="Придумайте имя">
-        <input type="password" name="create_password" placeholder="Придумайте пароль">
-        <button style="margin-left: 30px; padding: 10px 70px;">Зарегистрироваться</button>
+        <input type="email" id = "input_email" name="create_email" placeholder="Введите почту">
+          <input type="text" id="input_username" name="create_user_name" placeholder="Придумайте имя">
+        <input type="password"  name="create_password" placeholder="Придумайте пароль">
+        <button id = "registr_button" style="margin-left: 30px; padding: 10px 70px;">Зарегистрироваться</button>
       </form>
       <div class="signup">
         <span class="signup">Уже есть аккаунт?
@@ -44,5 +44,61 @@
       </div>
     </div>
   </div>
+{% block javascript %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function (){
+        $('#input_username').keyup(function (){
+            $.ajax(
+                {
+                    data: $(this).serialize(),
+                    url: "{% url 'validate_username' %}",
+                    success:
+                    function (response){
+                        if ($('#usernameError').length == 0)
+                            $('#input_username').after('<div class="invalid-feedback d-block" id="usernameError" style="text-align: center;"></div>');
+                        if (response.taken == true) {
+                            $('#input_username').removeClass('is-valid').addClass('is-invalid');
+                            $('#usernameError').removeClass('valid-feedback').addClass('invalid-feedback').text("Такое имя пользователя уже существует");
+                            $('#registr_button').prop('disabled', true);
+                        } else {
+                            $('#input_username').removeClass('is-invalid').addClass('is-valid');
+                            $('#usernameError').removeClass('invalid-feedback').addClass('valid-feedback').text("Такое имя пользователя доступно");
+                            $('#registr_button').prop('disabled', false);
+                        }
+                    },
+                    error: function (response){
+                        console.log(response.responseJSON.errors);
+                    }
+                });
+            return false;
+        });
+    $('#input_email').keyup(function () {
+    $.ajax({
+        data: $(this).serialize(),
+        url: "{% url 'validate_email' %}",
+        success: function (response) {
+            if ($('#emailError').length == 0)
+                $('#input_email').after('<div class="invalid-feedback d-block" id="emailError" style="text-align: center;"></div>');
+
+            if (response.taken ==true) {
+                $('#input_email').removeClass('is-valid').addClass('is-invalid');
+                $('#emailError').removeClass('valid-feedback').addClass('invalid-feedback').text("Такой адрес электронной почты уже существует");
+                $('#registr_button').prop('disabled', true);
+            } else {
+                $('#input_email').removeClass('is-invalid').addClass('is-valid');
+                $('#emailError').removeClass('invalid-feedback').addClass('valid-feedback').text("Такой адрес электронной почты доступен");
+                $('#registr_button').prop('disabled', false);
+            }
+        },
+        error: function (response) {
+            console.log(response.responseJSON.errors);
+        }
+    });
+    return false;
+});
+});
+</script>
+{% endblock javascript %}
 </body>
 </html>

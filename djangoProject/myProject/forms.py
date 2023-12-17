@@ -2,17 +2,21 @@ from myProject.models import Order
 from datetime import date
 from django.core.exceptions import ValidationError
 from django import forms
+from bootstrap_datepicker_plus.widgets import DatePickerInput
 
 class OrderForm(forms.ModelForm):
 
     class Meta:
         model = Order
-        fields = ("number","monitor","amount","order_date","provider")
+        fields = ("number","monitor","amount","order_date","provider","region")
+        widgets = {
+            "order_date": DatePickerInput(options={"format": "MM/DD/YYYY"}),
+        }
 
     def clean_order_date(self):
         date_local = self.cleaned_data["order_date"]
         amount = self.cleaned_data["amount"]
-        if date_local.day - date.today().day < 5 and amount > 7:
+        if amount > 7:
             raise ValidationError("Вы уверены, что хотите заказать? Посылка может задержаться.")
         return date_local
 

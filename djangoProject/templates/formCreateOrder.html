@@ -12,37 +12,84 @@
     {% load crispy_forms_tags %}
     <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
   <!-- Fengyuan Chen's Datepicker -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
 
 </head>
-<body style="background: #009579">
+<body style="background: rgb(103,255,175)">
 
 <div id="registration-form">
-	<div class='fieldset'>
-    <legend>Оформление заказа:</legend>
-		<form action="#" method="post" data-validate="parsley">
-			<div class='row'>
+    <div class='fieldset'>
+        <legend>Оформление заказа:</legend>
+        <form action="#" method="post" data-validate="parsley">
+            <div class='row'>
                 {% block content %}
+                    {{ form.media }}
                     <form method = "post" style="text-align: center; margin:auto" class="form-group col-md-6 mb-0">
                         {% csrf_token %}
-                        <table id ="id_date">{{ form|crispy }}</table><br>
-                        <button type="submit" style=" background: rgb(64,199,129);
+                        <br>
+
+                        <div>
+                            {{ form.number| as_crispy_field }}
+                        </div>
+                        <div>
+                            {{ form.monitor | as_crispy_field }}
+                        </div>
+                        <div>
+                            {{ form.amount | as_crispy_field }}
+                        </div>
+                        <div>
+                            {{ form.order_date | as_crispy_field }}
+                        </div>
+                        <div>
+                            {{ form.provider | as_crispy_field }}
+                        </div>
+                        <div>
+                            {{ form.region | as_crispy_field }}
+                        </div>
+                        <br>
+                        <button id="order_button" type="submit" style=" background: rgb(64,199,129);
   box-shadow: 0 -3px rgb(53,167,110) inset; padding: 2em 9.4em; font-size: 15px; font-weight: 700;" class="btn btn-default">Добавить</button>
                     </form>
-                    <script>
-                        $(function () {
-                            $("#id_date").datepicker({
-                                format:'dd/mm/yyyy',
+                {% block javascript %}
+                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+                        <script>
+                            $(document).ready(function (){
+                                $('#id_number').keyup(function (){
+                                    $.ajax(
+                                        {
+                                            data: $(this).serialize(),
+                                            url: "{% url 'check_order_number' user.id %}",
+                                            success:
+                                                function (response){
+                                                    if ($('#numberError').length == 0)
+                                                        $('#id_number').after('<div class="invalid-feedback d-block" id="numberError"></div>');
+
+                                                    if (response.exist == true) {
+                                                        $('#id_number').removeClass('is-valid').addClass('is-invalid');
+                                                        $('#numberError').removeClass('valid-feedback').addClass('invalid-feedback').text("Заказ с таким номером уже существует");
+                                                        $('#order_button').prop('disabled', true);
+                                                    } else {
+                                                        $('#id_number').removeClass('is-invalid').addClass('is-valid');
+                                                        $('#numberError').removeClass('invalid-feedback').addClass('valid-feedback').text("Заказ можно добавить");
+                                                        $('#order_button').prop('disabled', false);
+                                                    }
+                                                },
+                                            error: function (response){
+                                                console.log(response.responseJSON.errors);
+                                            }
+                                        });
+                                    return false;
+                                });
                             });
-                        });
-                    </script>
-                {% endblock %}
-			</div>
-		</form>
-	</div>
+                        </script>
+                    {% endblock javascript %}
+            {% endblock %}
+            </div>
+        </form>
+    </div>
 </div>
 </body>
 
