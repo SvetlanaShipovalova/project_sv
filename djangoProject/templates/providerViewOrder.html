@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Информация о пользователе</title>
     {% extends "base.html" %}
+    {% load django_bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static 'show_info.css' %}">
 </head>
@@ -13,35 +17,34 @@
     <div class="col-md-8">
         <div class="panel panel-white profile-widget panel-shadow">
             <div class="row">
-                <div class="col-sm-12">
-                    <div class="image-container bg2">
-                        <img src="https://www.gravatar.com/avatar/{{provider.id}}{{link_img}}?d=wavatar" class="avatar" alt="avatar">
-                    </div>
-                </div>
                 <div class="col-sm-12" >
                     <div class="details" >
-                        <br><h4 style="background: rgba(41,203,119,0.7)">Статистика по продажам: </h4>
-                        <h6>{% for statistic in statisticss %}
-                            <table class="table table-success table-striped">
+                        <div><br><h4 style="background: rgba(41,203,119,0.7)">Статистика по продажам: </h4></div>
+                    </div>
+                    <table class="table table-success table-striped">
                         <thead>
                         <tr>
                             <th scope="col">Имя монитора</th>
-                            <th scope="col">Количество продаж по региону</th>
+                            <th scope="col">Количество</th>
+                            <th scope="col">Получатель</th>
                             <th scope="col">Дата заказа</th>
+                            <th scope="col">Адрес поставки</th>
                         </tr>
                         </thead>
                         <tbody>
+                        {% for order in orders %}
                         <tr>
-                            <th scope="row">{{statistics.monitor}}</th>
-                            <td></td>
-                            <td></td>
+                            <td>{{order.monitor}}</td>
+                            <td>{{order.amount}}</td>
+                            <td>{{order.customer}}</td>
+                            <td>{{order.order_date}}</td>
+                            <td>{{order.region}}</td>
                         </tr>
+                        {% endfor %}
                         </tbody>
-                    </table>
-                        {% endfor %}</h6>
 
-                    </div>
-                    </div>
+                    </table><br>
+                <a href ="{% url "delete_order" orders.id %}" class = "btn btn-primary" type="button">Удалить заказ</a>
                 </div>
             </div>
         </div>

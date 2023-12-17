@@ -3,7 +3,7 @@ import statistics
 
 from django.contrib.auth import login, logout
 
-from myProject.models import Order, Customer, Provider, Statistics
+from myProject.models import Order, Customer, Provider, Statistics, Region
 from myProject.forms import OrderForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
@@ -106,13 +106,27 @@ def create_order(request, id_user):
         form = OrderForm(request.POST)
         if form.is_valid():
             order = form.save(commit = False)
-            order.customer = Customer.objects.get(id_user_id = request.user.id)
-            order.provider = Provider.objects.get(id_user_id= id_user )
+            order.customer = Customer.objects.get(id_user_id=request.user.id)
             order.save()
             return redirect(f"/showCustomer/{id_user}")
         else:
             print("ups")
             return redirect("/")
-
-
-
+def delete_order(request, order_id):
+    try:
+        order = Order.objects.get(id=order_id)
+        order.delete()
+        return redirect(f"/showcustomer/{request.user.id}")
+    except Order.DoesNotExist:
+        print("Заказ не существует")
+        return redirect("/")
+def show_CustomerFromProvider(request, id_user):
+    user = request.user
+    provider = Provider.objects.get(id_user_id=request.user.id)
+    orders = Order.objects.filter(provider=provider.id)
+    orders = list(orders)
+    response_data = {
+        'provider': provider,
+        'orders': orders
+    }
+    return render(request, 'providerViewOrder.html', response_data)

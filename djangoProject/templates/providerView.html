@@ -23,21 +23,22 @@
                         <h3>Профиль пользователя: <i class="fa fa-sheild"></i></h3>
                         <h6>Поставщик: {{provider.first_name}} {{provider.last_name}} </h6>
                         <h6 style ="background: rgba(0,149,121,0.34)">Количество заказов: {{orders}} </h6>
-                        <div><br><h4 style="background: rgba(41,203,119,0.7)">Статистика по продажам: </h4></div>
                         <h6>
                             <table class="table table-success table-striped">
                         <thead>
                         <tr>
-                            <th scope="col">Регион</th>
-                            <th scope="col">Продукт</th>
-                            <th scope="col"></th>
+                            <th scope="col">Статистика_1</th>
+                            <th scope="col">Статистика_2</th>
                         </tr>
                         </thead>
                         <tbody>
-
-                            {% for statistics in statisticss %}
-                            <tr><th>{{statistics.region}}</th><th>{{statistics}}</th><th><button>Посмотреть заказы</button></th></tr>
-                            {% endfor %}
+                        <tr>{% for statistics in statisticss %}
+                            <td scope="col">{{statistics.store}}</td>
+                            {% endfor %}</tr>
+                        <tr>{% for statistics in statisticss %}
+                            <td scope="col">{{statistics}}</td>
+                            {% endfor %}</tr>
+                        <th  colspan="2"><a href ="{% url "Customers" provider.id %}" class = "btn btn-primary" type="button">Посмотреть заказы</a></th>
                         </tbody>
                     </table>
                           <br> {{ statistics.region }}

@@ -74,6 +74,7 @@ DATABASES = {
         'NAME': 'djiangofirst_project',
         'USER': 'root',
         'PASSWORD': '',
+        'STORAGE_ENGINE': 'MyISAM / INNODB / ETC',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
         'OPTIONS':{

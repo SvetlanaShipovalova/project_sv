@@ -12,5 +12,7 @@ urlpatterns = [
     path('showCustomer/<int:id_user>/', views.show_customer),
     path('logout/', LogoutView.as_view(next_page=reverse_lazy("home")), name="logout"),
     path('user_logout', views.logout_user, name="logout_user"),
+    path("providerView/<int:id_user>/",views.show_CustomerFromProvider,name = "Customers"),
+    path("providerView/<int:id_user>/deleteOrder", views.delete_order, name="delete_order"),
 
 ]

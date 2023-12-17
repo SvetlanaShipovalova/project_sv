@@ -19,14 +19,23 @@ class Monitor(models.Model):
 
     class Meta:
         db_table = "Monitor"
+class Region(models.Model):
+    name = models.SlugField(max_length=50, verbose_name="Регион местности", help_text="Введите название местности", null=False, blank=False)
+    address = models.CharField(max_length=50, verbose_name="Адрес", help_text="Введите адрес", null=False, blank=False)
+
+    def __str__(self):
+        return  self.name + ", " + self.address
+
+    class Meta:
+        db_table = "Region"
 class Customer(models.Model):
     first_name = models.CharField(max_length=50, verbose_name="Имя заказчика", help_text="Введите имя заказчика", null=False, blank=False)
     last_name = models.CharField(max_length=50, verbose_name="Фамилия заказчика", help_text="Введите фамилию заказчика", null=False, blank=False)
-    address = models.CharField(max_length=100, verbose_name="Адрес", help_text="Введите адрес", null=False, blank=False)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name="Регион", null=True, blank=True)
     id_user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="id пользователя", help_text="Выберите id пользователя", null=True, blank=True)
 
     def __str__(self):
-        return "Заказчик: " + self.first_name + " " + self.last_name + " " + self.address
+        return "Заказчик: " + self.first_name + " " + self.last_name + " "
 
     class Meta:
         db_table = "Customer"
@@ -44,8 +53,8 @@ class Provider(models.Model):
 class Statistics(models. Model):
     monitor = models.ManyToManyField(Monitor)
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE, verbose_name="Поставщик", null=False, blank=False)
-    region = models.CharField(max_length=50, verbose_name="Регион поставки", help_text="Введите регион поставки",
-                                  null=True, blank=True)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name="Регион", null=True, blank=True)
+    store = models.CharField(max_length=50, verbose_name="Склад", help_text="Введите адрес склада", null=True, blank=True)
 
     def __str__(self):
         print(self.monitor.all())
@@ -60,6 +69,7 @@ class Order(models.Model):
     provider = models.ForeignKey(Provider, on_delete=models.CASCADE, verbose_name="Поставщик", null=False, blank=False)
     statistics = models.ForeignKey(Statistics, on_delete=models.CASCADE, verbose_name="Статистика", null=True, blank=True)
     order_date = models.DateField(verbose_name="Дата получения", null=False, blank=False)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE, verbose_name="Регион", null=True, blank=True)
 
     def __str__(self):
 
