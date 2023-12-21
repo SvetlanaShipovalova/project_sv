@@ -36,8 +36,10 @@ def show_info(request):
                 'orders': orders,
             }
             return render(request, "providerView.html", response_data)
+        else:
+            return render(request, 'waitAddition.html')
     else:
-        return redirect("")
+        return render(request, 'notAccess.html')
 def show_customer(request, id_user):
     user = request.user
     if user.is_authenticated:
@@ -71,7 +73,7 @@ def show_index(request):
                 return redirect("/info")
             except Exception:
                 print("Неверно указанный пароль или почта")
-                return redirect("")
+                return render(request, 'notAccess.html')
         else:
             email = request.POST.get("create_email")
             username = request.POST.get("create_user_name")

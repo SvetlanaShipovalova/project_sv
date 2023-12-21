@@ -1,104 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Моя страница</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Моя страница</title>
     {% load django_bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
     {% load static %}
-  <link rel="stylesheet" type="text/css" href="{% static 'logForm.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'logForm.css' %}">
 </head>
 <body>
-  <div class="container">
+<div class="container">
     <input type="checkbox" id="check">
     <div class="login form">
-      <header>Вход</header>
-      <form method="post">
-          {% csrf_token %}
-          <input type="text" name="email" placeholder="Введите почту">
+        <header>Вход</header>
+        <form method="post">
+            {% csrf_token %}
+            <input type="text" name="email" placeholder="Введите почту">
             <input type="password" name="password" placeholder="Введите пароль">
-          <button style="margin-left: 80px; padding: 10px 70px;">Войти</button>
-      </form>
-      <div class="signup"><br>
-        <span class="signup">Нет аккаунта?
+            <button style="margin-left: 80px; padding: 10px 70px;">Войти</button>
+        </form>
+        <div class="signup"><br>
+            <span class="signup">Нет аккаунта?
          <label for="check">Регистрация</label>
         </span>
-      </div>
+        </div>
     </div>
     <div class="registration form">
-      <header>Регистрация</header>
-      <form method="post">
-          {% csrf_token %}
-        <input type="email" id = "input_email" name="create_email" placeholder="Введите почту">
-          <input type="text" id="input_username" name="create_user_name" placeholder="Придумайте имя">
-        <input type="password"  name="create_password" placeholder="Придумайте пароль">
-        <button id = "registr_button" style="margin-left: 30px; padding: 10px 70px;">Зарегистрироваться</button>
-      </form>
-      <div class="signup">
+        <header>Регистрация</header>
+        <form method="post">
+            {% csrf_token %}
+            <input type="email" id = "input_email" name="create_email" placeholder="Введите почту">
+            <input type="text" id="input_username" name="create_user_name" placeholder="Придумайте имя">
+            <input type="password"  name="create_password" placeholder="Придумайте пароль">
+            <button id = "registr_button" style="margin-left: 30px; padding: 10px 70px;">Зарегистрироваться</button>
+        </form>
+        <div class="signup">
         <span class="signup">Уже есть аккаунт?
          <label for="check">Вход</label>
         </span>
-      </div>
+        </div>
     </div>
-  </div>
+</div>
 {% block javascript %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-<script>
-    $(document).ready(function (){
-        $('#input_username').keyup(function (){
-            $.ajax(
-                {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function (){
+            $('#input_username').keyup(function (){
+                $.ajax(
+                    {
+                        data: $(this).serialize(),
+                        url: "{% url 'validate_username' %}",
+                        success:
+                            function (response){
+                                if ($('#usernameError').length == 0)
+                                    $('#input_username').after('<div class="invalid-feedback d-block" id="usernameError" style="text-align: center;"></div>');
+                                if (response.taken == true) {
+                                    $('#input_username').removeClass('is-valid').addClass('is-invalid');
+                                    $('#usernameError').removeClass('valid-feedback').addClass('invalid-feedback').text("Такое имя пользователя уже существует");
+                                    $('#registr_button').prop('disabled', true);
+                                } else {
+                                    $('#input_username').removeClass('is-invalid').addClass('is-valid');
+                                    $('#usernameError').removeClass('invalid-feedback').addClass('valid-feedback').text("Такое имя пользователя доступно");
+                                    $('#registr_button').prop('disabled', false);
+                                }
+                            },
+                        error: function (response){
+                            console.log(response.responseJSON.errors);
+                        }
+                    });
+                return false;
+            });
+            $('#input_email').keyup(function () {
+                $.ajax({
                     data: $(this).serialize(),
-                    url: "{% url 'validate_username' %}",
-                    success:
-                    function (response){
-                        if ($('#usernameError').length == 0)
-                            $('#input_username').after('<div class="invalid-feedback d-block" id="usernameError" style="text-align: center;"></div>');
-                        if (response.taken == true) {
-                            $('#input_username').removeClass('is-valid').addClass('is-invalid');
-                            $('#usernameError').removeClass('valid-feedback').addClass('invalid-feedback').text("Такое имя пользователя уже существует");
+                    url: "{% url 'validate_email' %}",
+                    success: function (response) {
+                        if ($('#emailError').length == 0)
+                            $('#input_email').after('<div class="invalid-feedback d-block" id="emailError" style="text-align: center;"></div>');
+
+                        if (response.taken ==true) {
+                            $('#input_email').removeClass('is-valid').addClass('is-invalid');
+                            $('#emailError').removeClass('valid-feedback').addClass('invalid-feedback').text("Такой адрес электронной почты уже существует");
                             $('#registr_button').prop('disabled', true);
                         } else {
-                            $('#input_username').removeClass('is-invalid').addClass('is-valid');
-                            $('#usernameError').removeClass('invalid-feedback').addClass('valid-feedback').text("Такое имя пользователя доступно");
+                            $('#input_email').removeClass('is-invalid').addClass('is-valid');
+                            $('#emailError').removeClass('invalid-feedback').addClass('valid-feedback').text("Такой адрес электронной почты доступен");
                             $('#registr_button').prop('disabled', false);
                         }
                     },
-                    error: function (response){
+                    error: function (response) {
                         console.log(response.responseJSON.errors);
                     }
                 });
-            return false;
+                return false;
+            });
         });
-    $('#input_email').keyup(function () {
-    $.ajax({
-        data: $(this).serialize(),
-        url: "{% url 'validate_email' %}",
-        success: function (response) {
-            if ($('#emailError').length == 0)
-                $('#input_email').after('<div class="invalid-feedback d-block" id="emailError" style="text-align: center;"></div>');
-
-            if (response.taken ==true) {
-                $('#input_email').removeClass('is-valid').addClass('is-invalid');
-                $('#emailError').removeClass('valid-feedback').addClass('invalid-feedback').text("Такой адрес электронной почты уже существует");
-                $('#registr_button').prop('disabled', true);
-            } else {
-                $('#input_email').removeClass('is-invalid').addClass('is-valid');
-                $('#emailError').removeClass('invalid-feedback').addClass('valid-feedback').text("Такой адрес электронной почты доступен");
-                $('#registr_button').prop('disabled', false);
-            }
-        },
-        error: function (response) {
-            console.log(response.responseJSON.errors);
-        }
-    });
-    return false;
-});
-});
-</script>
+    </script>
 {% endblock javascript %}
 </body>
 </html>

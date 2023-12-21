@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <title>Информация о пользователе</title>
@@ -13,46 +12,43 @@
 </head>
 <body style="background-color: #009579;">
 {% block content %}
-<div class="container bootstrap snippets bootdey" style="margin-left: 300px;margin-top: 60px;">
-    <div class="col-md-8">
-        <div class="panel panel-white profile-widget panel-shadow">
-            <div class="row">
-                <div class="col-sm-12" >
-                    <div class="details" >
-                        <div><br><h4 style="background: rgba(41,203,119,0.7)">Статистика по продажам: </h4></div>
+    <div class="container bootstrap snippets bootdey" style="margin-left: 300px;margin-top: 60px;">
+        <div class="col-md-8">
+            <div class="panel panel-white profile-widget panel-shadow">
+                <div class="row">
+                    <div class="col-sm-12" >
+                        <div class="details" >
+                            <div><br><h4 style="background: rgba(41,203,119,0.7)">Статистика по продажам: </h4></div>
+                        </div>
+                        <table class="table table-success table-striped ">
+                            <thead>
+                            <tr>
+                                <th scope="col">Имя монитора</th>
+                                <th scope="col">Количество</th>
+                                <th scope="col">Получатель</th>
+                                <th scope="col">Дата заказа</th>
+                                <th scope="col">Адрес поставки</th>
+                                <th scope="col"></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for order in orders %}
+                                <tr>
+                                    <td>{{order.monitor}}</td>
+                                    <td>{{order.amount}}</td>
+                                    <td>{{order.customer}}</td>
+                                    <td>{{order.order_date}}</td>
+                                    <td>{{order.region}}</td>
+                                    <td><a href ="{% url "delete_order" provider.id order.id %}" class = "btn btn-primary" type="button">Удалить заказ</a></td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table><br>
                     </div>
-                    <table class="table table-success table-striped">
-                        <thead>
-                        <tr>
-                            <th scope="col">Имя монитора</th>
-                            <th scope="col">Количество</th>
-                            <th scope="col">Получатель</th>
-                            <th scope="col">Дата заказа</th>
-                            <th scope="col">Адрес поставки</th>
-                            <th scope="col"></th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for order in orders %}
-                        <tr>
-                            <td>{{order.monitor}}</td>
-                            <td>{{order.amount}}</td>
-                            <td>{{order.customer}}</td>
-                            <td>{{order.order_date}}</td>
-                            <td>{{order.region}}</td>
-                            <td><a href ="{% url "delete_order" provider.id order.id %}" class = "btn btn-primary" type="button">Удалить заказ</a></td>
-
-                        </tr>
-                        {% endfor %}
-                        </tbody>
-
-                    </table><br>
-
                 </div>
             </div>
         </div>
     </div>
-</div>
-</body>
+    </body>
 {% endblock %}
 </html>
