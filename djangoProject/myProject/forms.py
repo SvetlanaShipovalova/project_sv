@@ -16,7 +16,7 @@ class OrderForm(forms.ModelForm):
     def clean_order_date(self):
         date_local = self.cleaned_data["order_date"]
         amount = self.cleaned_data["amount"]
-        if amount > 7:
+        if amount > 7 and date_local > date.today().day:
             raise ValidationError("Вы уверены, что хотите заказать? Посылка может задержаться.")
         return date_local
 
