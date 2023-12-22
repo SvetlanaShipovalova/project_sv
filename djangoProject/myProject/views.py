@@ -3,6 +3,7 @@ import statistics
 from bootstrap_datepicker_plus.widgets import DateTimePickerInput
 from django.contrib.auth import login, logout
 from django.http import JsonResponse
+from django.http import HttpResponse
 from django.views import generic
 from myProject.models import Order, Customer, Provider, Statistics, Region
 from myProject.forms import OrderForm
@@ -114,10 +115,7 @@ def create_order(request, id_user):
         else:
             print("ups")
             return redirect("/")
-def delete_order(request, id_user, order_id):
-    order = Order.objects.get(id=order_id)
-    order.delete()
-    return redirect(f"/providerView/{id_user}")
+
 
 def show_CustomerFromProvider(request, id_user):
     user = request.user
@@ -154,3 +152,18 @@ def check_numberOrder(request, id_customer):
     }
     return JsonResponse(response)
 
+def delete_order(request, id_user, order_id):
+    order = Order.objects.get(id=order_id)
+    order.delete()
+    return redirect(f"/providerView/{id_user}")
+def update_order(request, id_user, order_id):
+    order = Order.objects.get(id=order_id)
+    if request.method == "GET":
+        orderform = OrderForm(instance=order)
+        return render(request, "formUpdateOrder.html", {"form": orderform})
+    else:
+        form = OrderForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+            return redirect(f"/providerView/{id_user}")
+        return redirect("/")

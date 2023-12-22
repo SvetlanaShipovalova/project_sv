@@ -29,6 +29,7 @@
                                 <th scope="col">Дата заказа</th>
                                 <th scope="col">Адрес поставки</th>
                                 <th scope="col"></th>
+                                <th scope="col"></th>
                             </tr>
                             </thead>
                             <tbody>
@@ -40,6 +41,7 @@
                                     <td>{{order.order_date}}</td>
                                     <td>{{order.region}}</td>
                                     <td><a href ="{% url "delete_order" provider.id order.id %}" class = "btn btn-primary" type="button">Удалить заказ</a></td>
+                                    <td><a href ="{% url "update_order" provider.id order.id %}" class = "btn btn-warning" type="button">Изменить заказ</a></td>
                                 </tr>
                             {% endfor %}
                             </tbody>

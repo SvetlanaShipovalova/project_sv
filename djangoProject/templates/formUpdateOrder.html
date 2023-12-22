@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load crispy_forms_filters %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_field %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Оформление заказа:</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'formOrder.css' %}">
+    {% load crispy_forms_tags %}
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+</head>
+<body style="background: rgb(103,255,175)">
+<div id="registration-form">
+    <div class='fieldset'>
+        <form action="#" method="post" data-validate="parsley">
+            <div class='row'>
+                {% block content %}
+                    <br><h2 class="text-center">Изменение заказа:</h2>
+                    {{ form.media }}
+                    <form method = "post" style="text-align: center; margin:auto" class="form-group col-md-6 mb-0">
+                        {% csrf_token %}
+                        <br>
+                        <div>
+                            {{ form.number| as_crispy_field }}
+                        </div>
+                        <div>
+                            {{ form.monitor | as_crispy_field }}
+                        </div>
+                        <div>
+                            {{ form.amount | as_crispy_field }}
+                        </div>
+                        <div>
+                            {{ form.order_date | as_crispy_field }}
+                        </div>
+                        <div>
+                            {{ form.region | as_crispy_field }}
+                        </div>
+                        <br>
+                        <button id="order_button" type="submit" style=" background: rgb(64,199,129);
+  box-shadow: 0 -3px rgb(53,167,110) inset; padding: 2em 9.4em; font-size: 15px; font-weight: 700;" class="btn btn-default">Сохранить</button>
+                    </form>
+                    {% block javascript %}
+                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+                        <script>
+                            $(document).ready(function (){
+                                $('#id_number').keyup(function (){
+                                    $.ajax(
+                                        {
+                                            data: $(this).serialize(),
+                                            url: "{% url 'check_order_number' user.id %}",
+                                            success:
+                                                function (response){
+                                                    if ($('#numberError').length == 0)
+                                                        $('#id_number').after('<div class="invalid-feedback d-block" id="numberError"></div>');
+
+                                                    if (response.exist == true) {
+                                                        $('#id_number').removeClass('is-valid').addClass('is-invalid');
+                                                        $('#numberError').removeClass('valid-feedback').addClass('invalid-feedback').text("Заказ с таким номером уже существует");
+                                                        $('#order_button').prop('disabled', true);
+                                                    } else {
+                                                        $('#id_number').removeClass('is-invalid').addClass('is-valid');
+                                                        $('#numberError').removeClass('invalid-feedback').addClass('valid-feedback').text("Заказ можно добавить");
+                                                        $('#order_button').prop('disabled', false);
+                                                    }
+                                                },
+                                            error: function (response){
+                                                console.log(response.responseJSON.errors);
+                                            }
+                                        });
+                                    return false;
+                                });
+                            });
+                        </script>
+                    {% endblock javascript %}
+                {% endblock %}
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

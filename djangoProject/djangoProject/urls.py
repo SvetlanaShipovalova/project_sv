@@ -14,6 +14,7 @@ urlpatterns = [
     path('user_logout', views.logout_user, name="logout_user"),
     path("providerView/<int:id_user>/",views.show_CustomerFromProvider,name = "Customers"),
     path("providerView/<int:id_user>/<int:order_id>/deleteOrder", views.delete_order, name="delete_order"),
+    path('providerView/<int:id_user>/<int:order_id>/updateOrder/', views.update_order, name="update_order"),
 
 
     path('ajax/validate_username', views.validate_username, name='validate_username'),
