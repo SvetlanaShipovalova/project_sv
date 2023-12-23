@@ -6,7 +6,7 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from django.views import generic
 from myProject.models import Order, Customer, Provider, Statistics, Region
-from myProject.forms import OrderForm
+from myProject.forms import OrderForm, OrderSelector
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
@@ -162,8 +162,18 @@ def update_order(request, id_user, order_id):
         orderform = OrderForm(instance=order)
         return render(request, "formUpdateOrder.html", {"form": orderform})
     else:
-        form = OrderForm(request.POST, instance=order)
+        form = OrderSelector(request.POST )
         if form.is_valid():
-            form.save()
-            return redirect(f"/providerView/{id_user}")
-        return redirect("/")
+            obj = Order.objects.filter(id=order_id).update(
+                customer_id=Order.objects.filter(id=order_id).get(customer_id=order.customer.id),
+                provider_id=Order.objects.filter(id=order_id).get(provider_id=order.provider.id),
+                monitor=form.cleaned_data['monitor'],
+                provider=form.cleaned_data['provider'],
+                customer=form.cleaned_data['customer'],
+                region=form.cleaned_data['region'],
+                amount=form.cleaned_data['amount'],
+                number=form.cleaned_data['number'],
+                order_date=form.cleaned_data['order_date'],
+            )
+        return redirect(f"/providerView/{id_user}")
+
