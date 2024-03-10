@@ -1,7 +1,9 @@
 import re
 from app import myApp
-from flask import request, make_response, render_template, abort
+from flask import request, make_response, render_template, abort, redirect, url_for, session
 import random
+from main.forms import SimpleForm
+
 
 class User:
     def __init__(self, id_user, name):
@@ -21,8 +23,12 @@ def inf():
 @myApp.route("/index")
 def index():
     user = {"username": "Петя"}
-    user_agent = request.headers.get('User-Agent')
-    return render_template('index.html', user =user)
+    user_agent = request.headers.get('user-agent')
+    session_text = session.get('data')
+    if session_text is not None and session_text != "":
+        return render_template("index.html", user=user,email=session_text["email"], gender=session_text["gender"], login=session_text["login"], password=session_text["password"])
+    else:
+        return render_template('index.html', user=user)
 
 """5
 @myApp.route("/user/<name>")
@@ -64,3 +70,16 @@ def page_not(e):
     return render_template("400.html"), 400
 
 myApp.add_url_rule("/","index",index)
+
+@myApp.route("/testForm", methods = ["GET","POST"])
+def testform():
+    form = SimpleForm()
+    if form.validate_on_submit():
+        data = form.data
+        session["data"] = {"login": data["login"], "email": data["email"], "password": data["password"], "gender": data["gender"]}
+        form.login.data = ''
+        form.email.data = ''
+        form.password.data = ''
+        form.confirm_password.data = ''
+        return redirect(url_for('index'))
+    return render_template('formtemplate.html', form=form)
