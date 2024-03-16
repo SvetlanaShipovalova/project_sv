@@ -5,37 +5,18 @@ import random
 from main.forms import SimpleForm
 from models import Role, User
 
-
-class User:
-    def __init__(self, id_user, name):
-        self.id_user = id_user
-        self.name = name
-
-def load_user(user_id):
-    if user_id == "14":
-        return User(14,"Светлана")
-    elif user_id == "36":
-        return User(36,"Кристина")
-    else:
-        return None
 @myApp.route("/")
 def inf():
     return render_template('index.html')
 @myApp.route("/index")
 def index():
-    user = {"username": "Петя"}
-    user_agent = request.headers.get('user-agent')
     session_text = session.get('data')
     if session_text is not None and session_text != "":
-        return render_template("index.html", user=user,email=session_text["email"], gender=session_text["gender"], login=session_text["login"], password=session_text["password"])
+        return render_template("index.html", auth = session.get("auth"), username=session_text["username"],password=session_text["password"],
+                               email=session_text["email"],gender=session_text["gender"])
     else:
-        return render_template('index.html', user=user)
+        return render_template('index.html', auth = session.get("auth"))
 
-"""5
-@myApp.route("/user/<name>")
-def hello_user(name):
-    return "<h2>Good day, {}<h2>".format(name)
-"""
 @myApp.route("/bad_request")
 def bad_fill(code=400):
     abort(400)
@@ -54,14 +35,6 @@ def cust_response():
         response = make_response('<h1>Not using Mozilla browser</h1>')
     return response
 
-@myApp.route("/user/<user_id>")
-def get_user(user_id):
-    user = load_user(user_id)
-    if user is None:
-        return bad_fill(404)
-    else:
-        return "<h2>Hi, {}<h2>".format(user.name)
-
 @myApp.errorhandler(404)
 def page_not_found(e):
     return render_template("404.html"), 404
@@ -76,13 +49,28 @@ myApp.add_url_rule("/","index",index)
 def testform():
     form = SimpleForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter_by(username = form.username.data, password = form.password.data, email = form.email.data, gender = form.gender.data).first()
         if user is not None:
+            data = form.data
+            session["data"] = {"username": data["username"], "password": data["password"], "email": data["email"], "gender": data["gender"]}
+            form.username.data = ''
+            form.password.data = ''
+            form.email.data = ''
             session["auth"] = True
         else:
             session["auth"] = False
         return redirect(url_for('index'))
-    return render_template('formtemplate.html', form=form)
+    return render_template('formtemplate.html', form=form, auth = session.get("auth"))
+
+@myApp.route("/logout")
+def logout():
+    if session.get("auth"):
+        session["auth"] = False
+    return redirect(url_for('index'))
+
+
+
+
 
 '''
 @myApp.route("/testForm", methods = ["GET","POST"])

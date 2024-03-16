@@ -14,6 +14,8 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     username = db.Column(db.String(60), unique = True, index = True)
     password = db.Column(db.String(60))
+    email = db.Column(db.String(60))
+    gender = db.Column(db.String(60))
     role_id = db.Column(db.Integer,  db.ForeignKey("roles.id"))
 
     def __repr__(self):

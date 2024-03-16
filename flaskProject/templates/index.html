@@ -6,12 +6,9 @@
 <body>
 {% block content %}
 
-    {% if user %}
-        <h1 class="hidden" style="text-align: center"> {{ user.username }} </h1>
-        <h4 style="text-align: center">Пол: {{ gender }} <br> Почта: {{ email }} <br> Логин: {{ login }} <br> Пароль: {{ password }}</h4>
-    {% elif user %}
-        <h1 class="hidden" style="text-align: center"> {{ user.username }} </h1>
-         <h3 class="hidden" style="text-align: center">Самый ленивый активист</h3>
+    {% if auth %}
+        <h1 class="hidden" style="text-align: center"> {{ username }} </h1>
+        <h4 style="text-align: center">Пол: {{ gender }} <br> Почта: {{ email }} <br> Пароль: {{ password }}</h4>
     {% else %}
         <h2 style="text-align: center">Добро пожаловать!</h2>
     {% endif %}

@@ -21,7 +21,7 @@
             {% if not auth %}
             <li><a class ="btn btn-outline-dark" href="{{ url_for("testform") }}" role="button"> Авторизоваться </a></li>
             {% else %}
-            <li><a class ="btn btn-outline-dark" role="button"> Выйти </a></li>
+            <li><a class ="btn btn-outline-dark" href="{{ url_for("logout") }}" role="button"> Выйти </a></li>
             {% endif %}
         </ul>
       </nav>
