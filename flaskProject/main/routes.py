@@ -12,8 +12,8 @@ def inf():
 def index():
     session_text = session.get('data')
     if session_text is not None and session_text != "":
-        return render_template("index.html", auth = session.get("auth"), username=session_text["username"],password=session_text["password"],
-                               email=session_text["email"],gender=session_text["gender"])
+        return render_template("index.html", auth = session.get("auth"), username=session_text["username"],
+                               password=session_text["password"],email=session_text["email"],gender=session_text["gender"])
     else:
         return render_template('index.html', auth = session.get("auth"))
 
@@ -49,7 +49,8 @@ myApp.add_url_rule("/","index",index)
 def testform():
     form = SimpleForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username = form.username.data, password = form.password.data, email = form.email.data, gender = form.gender.data).first()
+        user = User.query.filter_by(username = form.username.data, password = form.password.data,
+                                    email = form.email.data, gender = form.gender.data).first()
         if user is not None:
             data = form.data
             session["data"] = {"username": data["username"], "password": data["password"], "email": data["email"], "gender": data["gender"]}
@@ -67,7 +68,6 @@ def logout():
     if session.get("auth"):
         session["auth"] = False
     return redirect(url_for('index'))
-
 
 
 
