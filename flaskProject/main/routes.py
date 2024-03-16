@@ -3,6 +3,7 @@ from app import myApp
 from flask import request, make_response, render_template, abort, redirect, url_for, session
 import random
 from main.forms import SimpleForm
+from models import Role, User
 
 
 class User:
@@ -75,11 +76,25 @@ myApp.add_url_rule("/","index",index)
 def testform():
     form = SimpleForm()
     if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is not None:
+            session["auth"] = True
+        else:
+            session["auth"] = False
+        return redirect(url_for('index'))
+    return render_template('formtemplate.html', form=form)
+
+'''
+@myApp.route("/testForm", methods = ["GET","POST"])
+def testform():
+    form = SimpleForm()
+    if form.validate_on_submit():
         data = form.data
-        session["data"] = {"login": data["login"], "email": data["email"], "password": data["password"], "gender": data["gender"]}
+        session["data"] = {"username": data["username"], "email": data["email"], "password": data["password"], "gender": data["gender"]}
         form.login.data = ''
         form.email.data = ''
         form.password.data = ''
         form.confirm_password.data = ''
         return redirect(url_for('index'))
     return render_template('formtemplate.html', form=form)
+'''
