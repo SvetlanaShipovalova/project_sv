@@ -61,7 +61,6 @@ def testform():
             form.password.data = ''
             form.email.data = ''
             session["auth"] = True
-            confirm(user)
         else:
             session["auth"] = False
         return redirect(url_for('index'))
@@ -73,17 +72,20 @@ def logout():
         session["auth"] = False
     return redirect(url_for('index'))
 
-
-def confirm(user):
-    send_mail("safinaliza51@gmail.com", "Create new user from Flask","send_mail",user=user)
-    redirect(url_for("index"))
+@myApp.route('/confirm', methods=['POST'])
+def confirm():
+    user = session.get('data')
+    user_email = user["email"]
+    send_mail(user_email, "Экспорт данных","send_mail",user=user)
+    return redirect(url_for('index'))
 
 def send_mail(to,subject, template, **kwargs):
+    html = render_template('send_mail.html', **kwargs)
     msg = Message(subject,
                   sender = myApp.config["MAIL_USERNAME"],
-                  recipients=[to])
-    msg.body = render_template(template + ".txt", **kwargs)
-    msg.body = render_template(template + ".html", **kwargs)
+                  recipients=[to],
+                  html=html,
+                  )
     mail.send(msg)
 
 

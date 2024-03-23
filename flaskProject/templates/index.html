@@ -9,6 +9,9 @@
     {% if auth %}
         <h1 class="hidden" style="text-align: center"> {{ username }} </h1>
         <h4 style="text-align: center">Пол: {{ gender }} <br> Почта: {{ email }} <br> Пароль: {{ password }}</h4>
+        <form style="text-align: center" method="post" action="{{ url_for('confirm') }}">
+            <input type="submit" value="Экспорт данных на почту">
+        </form>
     {% else %}
         <h2 style="text-align: center">Добро пожаловать!</h2>
     {% endif %}
