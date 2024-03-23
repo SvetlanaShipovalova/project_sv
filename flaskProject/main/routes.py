@@ -4,6 +4,9 @@ from flask import request, make_response, render_template, abort, redirect, url_
 import random
 from main.forms import SimpleForm
 from models import Role, User
+from flask_mail import Message
+from app import mail
+import os.path
 
 @myApp.route("/")
 def inf():
@@ -58,6 +61,7 @@ def testform():
             form.password.data = ''
             form.email.data = ''
             session["auth"] = True
+            confirm(user)
         else:
             session["auth"] = False
         return redirect(url_for('index'))
@@ -70,6 +74,17 @@ def logout():
     return redirect(url_for('index'))
 
 
+def confirm(user):
+    send_mail("safinaliza51@gmail.com", "Create new user from Flask","send_mail",user=user)
+    redirect(url_for("index"))
+
+def send_mail(to,subject, template, **kwargs):
+    msg = Message(subject,
+                  sender = myApp.config["MAIL_USERNAME"],
+                  recipients=[to])
+    msg.body = render_template(template + ".txt", **kwargs)
+    msg.body = render_template(template + ".html", **kwargs)
+    mail.send(msg)
 
 
 '''
