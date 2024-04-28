@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+<style>
+body {
+  font-family: arial, helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  color: #444;
+  background: #f2f2f2;
+}
+p {
+  margin: 10px 0;
+}
+a {
+  color: #e67e22;
+  text-decoration: none;
+  font-weight: bold;
+}
+a:hover {
+  color: #bf6516;
+}
+.wrapper {
+  margin: 20px 0;
+}
+.content {
+  display: block !important;
+  max-width: 600px !important;
+  margin: 0 auto !important;
+  clear: both !important;
+  background: white;
+}
+.brand span {
+  color: #e67e22;
+}
+h1 {
+  font-size: 30px;
+  color: #e67e22;
+  margin: 30px 0;
+}
+h2 {
+  font-size: 20px;
+  color: #e67e22;
+  margin: 30px 0;
+}
+.border {
+  border-top: 2px solid #e67e22;
+  border-bottom: 2px solid #e67e22;
+}
+</style>
+</head>
+
+<body translate="no">
+  <table class="wrapper">
+    <tr>
+        <td class="container"> 
+            <div class="content">
+                <table>
+                    <tr>
+                        <td class="border">
+                            <h2>Пользовательские данные:</h2>
+                            <h4>Имя: {{user.username}} <br> Пол:  {{user.gender}} <br> Почта: {{ user.email  }} <br> Пароль: {{user.password}} </h4>
+                            <h3>Пожалуйста, будьте осторожны с хранением данных!</h3>
+                        </td>
+                    </tr>
+                </table>
+            </div> 
+        </td>
+    </tr>
+</table>
+</body>
+</html>
