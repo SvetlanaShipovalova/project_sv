@@ -2,6 +2,8 @@ from flask_login import UserMixin
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import login_manager
+from authlib.jose import jwt
+from authlib.jose import JsonWebSignature
 
 
 class Role(db.Model):
@@ -21,6 +23,25 @@ class User(db.Model, UserMixin):
     descript = db.Column(db.String(300))
     password_hash = db.Column(db.String(128))
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    confirmed = db.Column(db.Boolean,default=False)
+
+    def generate_confirmation_token(self):
+        jws = JsonWebSignature()
+        protected = {'alg': 'HS256'}
+        payload = self.id
+        secret = 'secret'
+        return jws.serialize_compact(protected, payload, secret).decode('utf-8')
+
+    def confirm(self, token):
+        jws = JsonWebSignature()
+        data = jws.deserialize_compact(s=token, key='secret')
+        if data.payload.decode('utf-8') != str(self.id):
+            print("It's not you token")
+            return False
+        else:
+            self.confirmed = True
+            db.session.add(self)
+            return True
 
     @property
     def password(self):
@@ -34,6 +55,7 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return '<User %r>' % self.username
+
 
 @login_manager.user_loader
 def load_user(user_id):

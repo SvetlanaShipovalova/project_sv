@@ -1,9 +1,18 @@
 from flask import render_template, redirect, request, flash, url_for
+from flask_mail import Message
 from . import auth
 from .forms import LoginForm, RegistrationForm
 from .. import db
 from ..models import User
-from flask_login import login_user, login_required, logout_user
+from flask_login import login_user, login_required, logout_user, current_user
+from threading import Thread
+from app import mail
+
+@auth.before_app_request
+def before_request():
+    if current_user.is_authenticated and not current_user.confirmed and request.blueprint != 'auth' \
+       and request.endpoint != 'static':
+        return redirect(url_for('auth.unconfirmed'))
 
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
@@ -30,8 +39,11 @@ def register():
         db.session.add(user)
         user.set_password(form.password.data)
         db.session.commit()
+        token = user.generate_confirmation_token()
+        send_confirm(user, token)
         return redirect(url_for('auth.login'))
     return render_template("auth/registration.html", form=form)
+
 
 @auth.route('/logout')
 @login_required
@@ -40,3 +52,47 @@ def logout():
     flash("You are logout")
     return redirect((url_for('main.index')))
 
+
+@auth.route('/confirm/<token>')
+@login_required
+def confirm(token):
+    print(token)
+    if current_user.confirmed:
+        return redirect(url_for('main.index'))
+    if current_user.confirm(token):
+        db.session.commit()
+        flash("Ваше подтверждение прошло успешно, спасибо!")
+    else:
+        flash("Ваша ссылка не валидна или истекла")
+    return redirect(url_for('main.index'))
+
+
+@auth.route('/unconfirmed')
+def unconfirmed():
+    if current_user.is_anonymous or current_user.confirmed:
+        return redirect(url_for('main.index'))
+    return render_template('auth/unconfirmed.html')
+
+
+def send_confirm(user, token):
+    send_mail(user.email, 'Confirm your account', 'auth/confirm', user=user, token=token)
+    redirect(url_for('main.index'))
+
+
+def send_mail(to, subject, template, **kwargs):
+    msg = Message(subject,
+                  sender="testosvet@gmail.com",
+                  recipients=[to])
+    try:
+        msg.html = render_template(template + ".html", **kwargs)
+    except:
+        msg.body = render_template(template+".txt", **kwargs)
+    from app_file import flask_app
+    thread = Thread(target=send_async_email, args=[flask_app, msg])
+    thread.start()
+    return thread
+
+
+def send_async_email(app, msg):
+    with app.app_context():
+        mail.send(msg)

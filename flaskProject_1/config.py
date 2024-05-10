@@ -8,8 +8,8 @@ class Config:
     MAIL_SERVER = os.environ.get('MAIL_SERVER') or 'smtp.googlemail.com'
     MAIL_PORT = os.environ.get('MAIL_PORT') or '587'
     MAIL_USE_TLS = int(os.environ.get('MAIL_USE_TLS', '5870'))
-    MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or 'svetestik@gmail.com'
-    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or 'hyip lcnw uqxy wpev'
+    MAIL_USERNAME = os.environ.get('MAIL_USERNAME') or 'testosvet@gmail.com'
+    MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD') or 'wpjf qsta zhjx hfiy'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
 
     @staticmethod

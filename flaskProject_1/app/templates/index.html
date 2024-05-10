@@ -9,7 +9,7 @@
     {% if current_user.is_authenticated %}
         <h1 class="hidden" style="text-align: center"> {{ current_user.username  }} </h1>
         <h4 style="text-align: center">Почта: {{ current_user.email }} <br> Обо мне: {{ current_user.descript }} </h4>
-        <form style="text-align: center" method="post" action="{{ url_for('main.confirm') }}">
+        <form style="text-align: center" method="post" action="{{ url_for('main.testConfirm') }}">
             <input type="submit" value="Экспорт данных на почту">
         </form>
     {% else %}

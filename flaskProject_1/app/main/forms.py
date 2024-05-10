@@ -7,5 +7,4 @@ class SimpleForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     confirm_password = PasswordField('Подтвердите пароль', validators=[DataRequired(), EqualTo('password')])
-    gender = SelectField('Пол', choices=[('Мужской', 'Мужской'), ('Женский', 'Женский')])
     submit = SubmitField('Авторизоваться')

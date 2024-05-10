@@ -22,23 +22,23 @@ def bad_fill(code=400):
     abort(400)
     return "<h3>Bad Request<h3>", code
 
-
+'''
 @main.route("/testForm", methods = ["GET","POST"])
 def testform():
     form = SimpleForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username = form.username.data, password = form.password.data,
-                                    email = form.email.data, gender = form.gender.data).first()
+                                    email = form.email.data).first()
         if user is not None:
             data = form.data
-            session["data"] = {"username": data["username"], "password": data["password"], "email": data["email"], "gender": data["gender"]}
+            session["data"] = {"username": data["username"], "password": data["password"], "email": data["email"]}
             form.username.data = ''
             form.password.data = ''
             form.email.data = ''
             session["auth"] = True
         else:
             session["auth"] = False
-        return redirect(url_for('index'))
+        return redirect(url_for('main.index'))
     return render_template('formTemplate.html', form=form, auth = session.get("auth"))
 
 
@@ -57,7 +57,7 @@ def send_mail(to,subject, template, **kwargs):
                   html=html,
                   )
     mail.send(msg)
-
+'''
 
 @main.route("/secret")
 @login_required
