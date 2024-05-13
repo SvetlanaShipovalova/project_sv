@@ -1,11 +1,8 @@
-from flask import render_template, redirect, url_for, session, abort
-from app.main.forms import SimpleForm
-from app.models import User
+from flask import render_template,  session, abort
+from app.models import User, Permission
 from . import main
-
-from flask_mail import Message
+from ..decorators import admin_required, permission_required
 from flask_login import login_required
-from .. import db, mail
 
 
 @main.route('/')
@@ -65,9 +62,25 @@ def secret():
     print("test login")
     return "Only for auth"
 
-
 @main.route("/testConfirm")
 def testConfirm():
     user = User.query.filter_by().first()
     tmp = user.generate_confirmation_token()
     user.confirm(tmp)
+
+@main.route('/admin')
+@login_required
+@admin_required
+def for_admin():
+    return "For admin"
+
+@main.route('/moderate')
+@login_required
+@permission_required(Permission.DRIVERS)
+def for_moderator():
+    return "For moderator"
+
+@main.route('/user/<username>')
+def user(username):
+    user = User.query.filter_by(username=username).first_or_404()
+    return render_template('profile.html', user=user)
