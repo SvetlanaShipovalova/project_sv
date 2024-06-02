@@ -1,6 +1,7 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SelectField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField
 from wtforms.validators import DataRequired, EqualTo, Email
+
 
 class SimpleForm(FlaskForm):
     username = StringField('Имя пользователя', validators=[DataRequired()])

@@ -1,14 +1,7 @@
-from app.models import User, Role
-from app import create_app, db
+from app import create_app
 import unittest
 
 flask_app = create_app('default')
-
-"""
-@flask_app.shell_context_processors
-def make_shell_context():
-    return dict(db=db, User=User, Role=Role)
-"""
 
 @flask_app.cli.command('test')
 def test():

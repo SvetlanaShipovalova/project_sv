@@ -4,17 +4,37 @@
     {% extends "base.html" %}
     <title></title>
 </head>
-<body>
 {% block content %}
     {% if current_user.is_authenticated %}
-        <h1 class="hidden" style="text-align: center"> {{ current_user.username  }} </h1>
-        <h4 style="text-align: center">Почта: {{ current_user.email }} <br> Обо мне: {{ current_user.descript }} </h4>
-        <form style="text-align: center" method="post" action="{{ url_for('main.testConfirm') }}">
-            <input type="submit" value="Экспорт данных на почту">
+        <h1 class="hidden" style="text-align: center">  {{ current_user.username  }} </h1>
+        <h4 style="text-align: center">
+            Почта: {{ current_user.email }} <br>
+            Обо мне: {{ current_user.descript }}
+        </h4>
+        <form style="text-align: center" method="post" action="{{ url_for('main.test_confirm') }}">
+            <a class="btn btn-info" href="{{ url_for('main.marks', username=current_user.username) }}" role="button">Избранные маршруты</a>
+        {% if current_user.is_driver() %}
+                <a class="btn btn-info" href="{{ url_for('main.for_moderator') }}" role="button">Информация о перевозках</a>
+        {% elif current_user.is_admin() %}
+                <a class="btn btn-info" href="{{ url_for('main.for_admin') }}" role="button">Информация о перевозках</a>
+        {% else %}
+                <a class="btn btn-info" href="{{ url_for('main.user', username=current_user.username) }}" role="button">Информация о перевозках</a>
+        {% endif %}
         </form>
     {% else %}
         <h2 style="text-align: center">Добро пожаловать!</h2>
+        <div class="inf">
+            <div class="text">"Городской перевозчик" - это автопарк, который специализируется на предоставлении услуг перевозки
+                пассажиров в пределах города по трём основным автобусным маршрутам с номерами 25, 77 и 95.
+                На сайте компании можно ознакомиться с подробной информацией о каждом из маршрутов,
+                а также отслеживать активность автобусов в реальном времени.
+                Независимо от вашего местоположения или времени суток, "Городской перевозчик" гарантирует надёжность
+                и комфорт во время своих поездок, обеспечивая своим пассажирам комфортное и безопасное передвижение по городу.
+                <br> Для того, чтобы ознакомиться с актуальной информацией - зарегистрируйтесь.</div>
+            <div class="img_1"><img src="https://sochibisnes.ru/wp-content/uploads/2022/01/городские-автобусы1.jpg" width="470" height="300" alt="" style="border-radius:20px; position: relative;"></div>
+            <div class="img_2"><img src="https://cdn.iportal.ru/news/2015/99/preview/dea57a7cc0852d5e348af63c9960b75d027c06ef_1241_827.jpg" width="470" height="300" alt="" style="border-radius:20px; position: relative;"></div>
+            <div class="img_3"><img src="https://image.made-in-china.com/2f0j00NTnUefQRuEkz/Sunlong-Slk6128-New-Intercity-Bus.jpg" width="470" height="300" alt="" style="border-radius:20px; position: relative;"></div>
+        </div>
     {% endif %}
 {% endblock %}
-</body>
 </html>

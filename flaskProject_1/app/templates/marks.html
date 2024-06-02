@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% extends "base.html" %}
+    <title></title>
+</head>
+<body>
+{% block content %}
+    {% for bus in bus %}
+        <div class="card" style="width: 18rem; margin: 20px; display: inline-block;">
+            <img src="{{ bus.img }}" width="200px" class="card-img-top" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">{{ bus.model}}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">
+                    Номер автобуса: {{ bus.number }}
+                </h6>
+                <p class="card-text">
+                    Маршрут: {{ bus.route }} <br>
+                    В данный момент: {{ bus.condition }} <br>
+                    Расписание: {{ bus.schedule }}
+                </p>
+                <a class="btn btn-outline-danger" href="{{ url_for('main.remove_mark', username=current_user.username, bus_id = bus.id) }}" role="button">Удалить из избранного</a>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
+</body>
+</html>
