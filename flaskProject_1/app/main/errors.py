@@ -9,4 +9,4 @@ def page_not_found():
 
 @main.errorhandler(400)
 def error_request():
-    pass
+    return render_template("400.html"), 400

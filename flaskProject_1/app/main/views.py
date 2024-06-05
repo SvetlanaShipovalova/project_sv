@@ -1,4 +1,4 @@
-from flask import render_template, redirect, url_for, session, abort
+from flask import render_template, redirect, url_for
 from flask_admin.contrib.sqla import ModelView
 from app.models import User, Permission, Role, Bus, Mark
 from . import main
@@ -10,24 +10,7 @@ from .. import db, admin
 @main.route('/')
 @main.route('/index')
 def index():
-    session_text = session.get('text')
-    if session_text is not None or session_text != "":
-        return render_template("index.html")
-    else:
-        return render_template('index.html')
-
-
-@main.route("/bad_request")
-def bad_fill(code=400):
-    abort(400)
-    return "<h3>Bad Request<h3>", code
-
-
-@main.route("/secret")
-@login_required
-def secret():
-    print("test login")
-    return "Only for auth"
+    return render_template('index.html')
 
 
 @main.route("/testConfirm")
@@ -97,6 +80,7 @@ def check_work():
 @main.route('/user/<username>')
 def user(username):
     """
+    :param username: имя пользователя
     Страница, отображаемая для обычных пользователей с ролью "User", либо None.
     Выводит таблицу, содержащую сведения об автобусах, находящихся на маршруте в данный момент, расписание и их направление.
     """
@@ -108,6 +92,7 @@ def user(username):
 @main.route('/marks/<username>')
 def marks(username):
     """
+    :param username: имя пользователя
     Страница с отмеченными как избранное автобусами, для более быстрого поиска конкретного.
     """
     bus = []
@@ -120,6 +105,8 @@ def marks(username):
 @main.route("/add_mark/<username>/<bus_id>", methods=['GET', 'POST'])
 def add_mark(username, bus_id):
     """
+    :param username: имя пользователя
+    :param username: идентификатор автобуса
     Добавление отметки "Избранное".
     Функция получает параметры пользователя и отмеченного им автобуса и создает объект модели.
     После происходит перенаправление на главную страницу с информацией о пользователе.
@@ -137,6 +124,8 @@ def add_mark(username, bus_id):
 @main.route("/remove_mark/<username>/<bus_id>", methods=['GET', 'POST'])
 def remove_mark(username, bus_id):
     """
+    :param username: имя пользователя
+    :param username: идентификатор автобуса
     Удаление отметки "Избранное".
     """
     bus = Bus.query.filter_by(id=bus_id).first_or_404()

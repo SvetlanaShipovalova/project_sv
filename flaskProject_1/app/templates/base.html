@@ -11,13 +11,13 @@
     <div class="container">
         <h3 class="logo">Городской перевозчик</h3>
         <nav>
-            <ul>
+            <ul class="mb-2">
                 {% if current_user.is_authenticated %}
                     <li><a href="/index">Информация о пользователе </a></li>
-                    <li><a class="btn btn-outline-danger mb-2" href="{{ url_for('auth.logout') }}" role="button">Выйти</a></li>
+                    <li><a class="btn btn-danger mb-2" href="{{ url_for('auth.logout') }}" role="button">Выйти</a></li>
                 {% else %}
-                    <li><a class="btn btn-outline-dark mb-2" href="{{ url_for('auth.login') }}" role="button">Авторизоваться</a></li>
-                    <li><a class="btn btn-outline-dark mb-2" href="{{ url_for('auth.register') }}" role="button">Зарегистрироваться</a></li>
+                    <li><a class="btn btn-dark mb-2" href="{{ url_for('auth.login') }}" role="button">Авторизоваться</a></li>
+                    <li><a class="btn btn-dark mb-2" href="{{ url_for('auth.register') }}" role="button">Зарегистрироваться</a></li>
                 {% endif %}
             </ul>
         </nav>

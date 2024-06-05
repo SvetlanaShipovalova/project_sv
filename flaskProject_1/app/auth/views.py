@@ -82,7 +82,7 @@ def logout():
 @login_required
 def confirm(token):
     """
-    Эта функция принимает токен в качестве аргумента и проверяет его наличие.
+    :param token: принимает токен в качестве аргумента и проверяет его наличие
     Если пользователь уже подтвержден, то происходит перенаправление на главную страницу сайта.
     Если пользователь еще не подтвержден, то вызывается метод с переданным токеном.
     Если подтверждение прошло успешно, то происходит коммит к базе данных,
@@ -90,7 +90,6 @@ def confirm(token):
     Если метод confirm() возвращает False, то выводится сообщение о невалидной или истекшей ссылке
     и происходит перенаправление на главную страницу сайта.
     """
-    print(token)
     if current_user.confirmed:
         return redirect(url_for('main.index'))
     if current_user.confirm(token):
@@ -109,12 +108,19 @@ def unconfirmed():
 
 
 def send_confirm(user, token):
+    """
+    :param user: пользователь
+    :param token: токен
+    """
     send_mail(user.email, 'Confirm your account', 'auth/confirm', user=user, token=token)
     redirect(url_for('main.index'))
 
 
 def send_mail(to, subject, template, **kwargs):
     """
+    :param to: отправитель
+    :param subject: получатель
+    :param template: шаблон письма
     В функции создается объект сообщения (msg) с указанием отправителя и получателя.
     Затем происходит попытка отрендерить текст сообщения с помощью шаблона HTML.
     Если это не удалось, то текст рендерится с помощью шаблона TXT.
@@ -137,7 +143,8 @@ def send_mail(to, subject, template, **kwargs):
 
 def send_async_email(app, msg):
     """
-    Функция send_async_email принимает объект и сообщение.
+    :param app: объект приложения
+    :param msg: сообщение
     С помощью менеджера контекста приложения, используется mail.send для отправки сообщения.
     """
     with app.app_context():

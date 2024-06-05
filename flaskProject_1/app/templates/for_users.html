@@ -15,18 +15,25 @@
                 <th scope="col"> Состояние </th>
                 <th scope="col"> Модель </th>
                 <th scope="col"> Маршрут </th>
+                <th scope="col"> Режим </th>
             </tr>
             </thead>
             <tbody>
             {% for bus in bus %}
                 <tr>
-                    <th scope="col"><img src="{{ bus.img }}" width="350px" alt=""></th>
+                    <th scope="col"><img src="{{ bus.img }}" width="350px" alt="" style="border-radius:10px;"></th>
                     <th scope="col">{{ bus.number }}</th>
-                    <th scope="col">{{ bus.condition }}</th>
+                    <th scope="col" style="width:200px;">{{ bus.condition }}</th>
                     <th scope="col">{{ bus.model}}</th>
                     <th scope="col">{{ bus.route }}</th>
                 {% if current_user.is_driver() %}
-                    <th scope="col">{{ bus.working_shift }}</th>
+                    <th scope="col">
+                        {% if bus.working_shift == True %}
+                            Смена открыта
+                        {% else %}
+                            Смена закрыта
+                        {% endif %}
+                    </th>
                     <th scope="col" class="text-center">
                        <a href="{{ url_for('main.check_work') }}" role="button" class="btn btn-info mb-3" >Открыть/Закрыть смену</a>
                     </th>
@@ -56,7 +63,7 @@
                     <tbody>
                     {% for other_bus in other_bus %}
                         <tr>
-                            <th scope="col"><img src="{{ other_bus.img }}" width="240px" alt=""></th>
+                            <th scope="col"><img src="{{ other_bus.img }}" width="240px" alt="" style="border-radius:10px;"></th>
                             <th scope="col">{{ other_bus.number }}</th>
                             <th scope="col">{{ other_bus.condition }}</th>
                             <th scope="col">{{ other_bus.model}}</th>
